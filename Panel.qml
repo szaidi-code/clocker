@@ -211,7 +211,7 @@ Panel {
     command: [
       "bash",
       "-c",
-      "awk -F'\\t' 'FILENAME ~ /iso3166\\.tab$/ && $0 !~ /^#/ && NF >= 2 { c[$1] = $2; if ($1 == \"GB\") c[$1] = \"United Kingdom\"; if ($1 == \"US\") c[$1] = \"United States\"; next } $0 !~ /^#/ && NF >= 3 { split($1, codes, \",\"); cc = codes[1]; if (cc in c && !($3 in seen)) { seen[$3] = 1; print $3 \"\\t\" c[cc] } }' /usr/share/zoneinfo/iso3166.tab /usr/share/zoneinfo/zone.tab /usr/share/zoneinfo/zone1970.tab 2>/dev/null"
+      "awk -F'\\t' 'FILENAME ~ /iso3166\\.tab$/ && $0 !~ /^#/ && NF >= 2 { c[$1] = $2; next } $0 !~ /^#/ && NF >= 3 { split($1, codes, \",\"); cc = codes[1]; abbr = (cc == \"GB\" ? \"UK\" : cc); if (cc in c && !($3 in seen)) { seen[$3] = 1; print $3 \"\\t\" abbr \"|\" c[cc] } }' /usr/share/zoneinfo/iso3166.tab /usr/share/zoneinfo/zone.tab /usr/share/zoneinfo/zone1970.tab 2>/dev/null"
     ]
     stdout: StdioCollector {
       waitForEnd: true

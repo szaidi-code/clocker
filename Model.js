@@ -1,103 +1,103 @@
 .pragma library
 
 var CURATED_CITIES = [
-  { label: "NYC", city: "New York", country: "United States", tz: "America/New_York" },
-  { label: "WAS", city: "Washington DC", country: "United States", tz: "America/New_York" },
-  { label: "BOS", city: "Boston", country: "United States", tz: "America/New_York" },
-  { label: "MIA", city: "Miami", country: "United States", tz: "America/New_York" },
-  { label: "ATL", city: "Atlanta", country: "United States", tz: "America/New_York" },
-  { label: "CHI", city: "Chicago", country: "United States", tz: "America/Chicago" },
-  { label: "DAL", city: "Dallas", country: "United States", tz: "America/Chicago" },
-  { label: "HOU", city: "Houston", country: "United States", tz: "America/Chicago" },
-  { label: "AUS", city: "Austin", country: "United States", tz: "America/Chicago" },
-  { label: "DEN", city: "Denver", country: "United States", tz: "America/Denver" },
-  { label: "PHX", city: "Phoenix", country: "United States", tz: "America/Phoenix" },
-  { label: "SFO", city: "San Francisco", country: "United States", tz: "America/Los_Angeles" },
-  { label: "LAX", city: "Los Angeles", country: "United States", tz: "America/Los_Angeles" },
-  { label: "SEA", city: "Seattle", country: "United States", tz: "America/Los_Angeles" },
-  { label: "HAW", city: "Hawaii", country: "United States", tz: "Pacific/Honolulu" },
-  { label: "HNL", city: "Honolulu", country: "United States", tz: "Pacific/Honolulu" },
-  { label: "YYZ", city: "Toronto", country: "Canada", tz: "America/Toronto" },
-  { label: "YVR", city: "Vancouver", country: "Canada", tz: "America/Vancouver" },
-  { label: "YUL", city: "Montreal", country: "Canada", tz: "America/Toronto" },
-  { label: "MEX", city: "Mexico City", country: "Mexico", tz: "America/Mexico_City" },
-  { label: "GRU", city: "Sao Paulo", country: "Brazil", tz: "America/Sao_Paulo" },
-  { label: "EZE", city: "Buenos Aires", country: "Argentina", tz: "America/Argentina/Buenos_Aires" },
-  { label: "LDN", city: "London", country: "United Kingdom", tz: "Europe/London" },
-  { label: "DUB", city: "Dublin", country: "Ireland", tz: "Europe/Dublin" },
-  { label: "LIS", city: "Lisbon", country: "Portugal", tz: "Europe/Lisbon" },
-  { label: "PAR", city: "Paris", country: "France", tz: "Europe/Paris" },
-  { label: "BER", city: "Berlin", country: "Germany", tz: "Europe/Berlin" },
-  { label: "FRA", city: "Frankfurt", country: "Germany", tz: "Europe/Berlin" },
-  { label: "MUC", city: "Munich", country: "Germany", tz: "Europe/Berlin" },
-  { label: "AMS", city: "Amsterdam", country: "Netherlands", tz: "Europe/Amsterdam" },
-  { label: "BRU", city: "Brussels", country: "Belgium", tz: "Europe/Brussels" },
-  { label: "ZRH", city: "Zurich", country: "Switzerland", tz: "Europe/Zurich" },
-  { label: "GVA", city: "Geneva", country: "Switzerland", tz: "Europe/Zurich" },
-  { label: "MAD", city: "Madrid", country: "Spain", tz: "Europe/Madrid" },
-  { label: "BCN", city: "Barcelona", country: "Spain", tz: "Europe/Madrid" },
-  { label: "ROM", city: "Rome", country: "Italy", tz: "Europe/Rome" },
-  { label: "MIL", city: "Milan", country: "Italy", tz: "Europe/Rome" },
-  { label: "VIE", city: "Vienna", country: "Austria", tz: "Europe/Vienna" },
-  { label: "STO", city: "Stockholm", country: "Sweden", tz: "Europe/Stockholm" },
-  { label: "OSL", city: "Oslo", country: "Norway", tz: "Europe/Oslo" },
-  { label: "CPH", city: "Copenhagen", country: "Denmark", tz: "Europe/Copenhagen" },
-  { label: "WAW", city: "Warsaw", country: "Poland", tz: "Europe/Warsaw" },
-  { label: "PRG", city: "Prague", country: "Czechia", tz: "Europe/Prague" },
-  { label: "ATH", city: "Athens", country: "Greece", tz: "Europe/Athens" },
-  { label: "IST", city: "Istanbul", country: "Turkey", tz: "Europe/Istanbul" },
-  { label: "CAI", city: "Cairo", country: "Egypt", tz: "Africa/Cairo" },
-  { label: "CMN", city: "Casablanca", country: "Morocco", tz: "Africa/Casablanca" },
-  { label: "LOS", city: "Lagos", country: "Nigeria", tz: "Africa/Lagos" },
-  { label: "NBO", city: "Nairobi", country: "Kenya", tz: "Africa/Nairobi" },
-  { label: "JNB", city: "Johannesburg", country: "South Africa", tz: "Africa/Johannesburg" },
-  { label: "DXB", city: "Dubai", country: "United Arab Emirates", tz: "Asia/Dubai" },
-  { label: "AUH", city: "Abu Dhabi", country: "United Arab Emirates", tz: "Asia/Dubai" },
-  { label: "RUH", city: "Riyadh", country: "Saudi Arabia", tz: "Asia/Riyadh" },
-  { label: "JED", city: "Jeddah", country: "Saudi Arabia", tz: "Asia/Riyadh" },
-  { label: "MKK", city: "Makkah", country: "Saudi Arabia", tz: "Asia/Riyadh" },
-  { label: "MED", city: "Madinah", country: "Saudi Arabia", tz: "Asia/Riyadh" },
-  { label: "BAG", city: "Baghdad", country: "Iraq", tz: "Asia/Baghdad" },
-  { label: "DOH", city: "Doha", country: "Qatar", tz: "Asia/Qatar" },
-  { label: "KWI", city: "Kuwait City", country: "Kuwait", tz: "Asia/Kuwait" },
-  { label: "BAH", city: "Manama", country: "Bahrain", tz: "Asia/Bahrain" },
-  { label: "MCT", city: "Muscat", country: "Oman", tz: "Asia/Muscat" },
-  { label: "AMM", city: "Amman", country: "Jordan", tz: "Asia/Amman" },
-  { label: "THR", city: "Tehran", country: "Iran", tz: "Asia/Tehran" },
-  { label: "KHI", city: "Karachi", country: "Pakistan", tz: "Asia/Karachi" },
-  { label: "LHE", city: "Lahore", country: "Pakistan", tz: "Asia/Karachi" },
-  { label: "ISB", city: "Islamabad", country: "Pakistan", tz: "Asia/Karachi" },
-  { label: "BOM", city: "Mumbai", country: "India", tz: "Asia/Kolkata" },
-  { label: "DEL", city: "New Delhi", country: "India", tz: "Asia/Kolkata" },
-  { label: "BLR", city: "Bengaluru", country: "India", tz: "Asia/Kolkata" },
-  { label: "DAC", city: "Dhaka", country: "Bangladesh", tz: "Asia/Dhaka" },
-  { label: "BKK", city: "Bangkok", country: "Thailand", tz: "Asia/Bangkok" },
-  { label: "SIN", city: "Singapore", country: "Singapore", tz: "Asia/Singapore" },
-  { label: "KUL", city: "Kuala Lumpur", country: "Malaysia", tz: "Asia/Kuala_Lumpur" },
-  { label: "CGK", city: "Jakarta", country: "Indonesia", tz: "Asia/Jakarta" },
-  { label: "MNL", city: "Manila", country: "Philippines", tz: "Asia/Manila" },
-  { label: "HKG", city: "Hong Kong", country: "China", tz: "Asia/Hong_Kong" },
-  { label: "SHA", city: "Shanghai", country: "China", tz: "Asia/Shanghai" },
-  { label: "PEK", city: "Beijing", country: "China", tz: "Asia/Shanghai" },
-  { label: "TPE", city: "Taipei", country: "Taiwan", tz: "Asia/Taipei" },
-  { label: "ICN", city: "Seoul", country: "South Korea", tz: "Asia/Seoul" },
-  { label: "TYO", city: "Tokyo", country: "Japan", tz: "Asia/Tokyo" },
-  { label: "OSA", city: "Osaka", country: "Japan", tz: "Asia/Tokyo" },
-  { label: "PER", city: "Perth", country: "Australia", tz: "Australia/Perth" },
-  { label: "SYD", city: "Sydney", country: "Australia", tz: "Australia/Sydney" },
-  { label: "MEL", city: "Melbourne", country: "Australia", tz: "Australia/Melbourne" },
-  { label: "AKL", city: "Auckland", country: "New Zealand", tz: "Pacific/Auckland" },
-  { label: "UTC", city: "UTC", country: "Universal Time", tz: "Etc/UTC" }
+  { label: "NYC", city: "New York", country: "US", countryName: "United States", tz: "America/New_York" },
+  { label: "WAS", city: "Washington DC", country: "US", countryName: "United States", tz: "America/New_York" },
+  { label: "BOS", city: "Boston", country: "US", countryName: "United States", tz: "America/New_York" },
+  { label: "MIA", city: "Miami", country: "US", countryName: "United States", tz: "America/New_York" },
+  { label: "ATL", city: "Atlanta", country: "US", countryName: "United States", tz: "America/New_York" },
+  { label: "CHI", city: "Chicago", country: "US", countryName: "United States", tz: "America/Chicago" },
+  { label: "DAL", city: "Dallas", country: "US", countryName: "United States", tz: "America/Chicago" },
+  { label: "HOU", city: "Houston", country: "US", countryName: "United States", tz: "America/Chicago" },
+  { label: "AUS", city: "Austin", country: "US", countryName: "United States", tz: "America/Chicago" },
+  { label: "DEN", city: "Denver", country: "US", countryName: "United States", tz: "America/Denver" },
+  { label: "PHX", city: "Phoenix", country: "US", countryName: "United States", tz: "America/Phoenix" },
+  { label: "SFO", city: "San Francisco", country: "US", countryName: "United States", tz: "America/Los_Angeles" },
+  { label: "LAX", city: "Los Angeles", country: "US", countryName: "United States", tz: "America/Los_Angeles" },
+  { label: "SEA", city: "Seattle", country: "US", countryName: "United States", tz: "America/Los_Angeles" },
+  { label: "HAW", city: "Hawaii", country: "US", countryName: "United States", tz: "Pacific/Honolulu" },
+  { label: "HNL", city: "Honolulu", country: "US", countryName: "United States", tz: "Pacific/Honolulu" },
+  { label: "YYZ", city: "Toronto", country: "CA", countryName: "Canada", tz: "America/Toronto" },
+  { label: "YVR", city: "Vancouver", country: "CA", countryName: "Canada", tz: "America/Vancouver" },
+  { label: "YUL", city: "Montreal", country: "CA", countryName: "Canada", tz: "America/Toronto" },
+  { label: "MEX", city: "Mexico City", country: "MX", countryName: "Mexico", tz: "America/Mexico_City" },
+  { label: "GRU", city: "Sao Paulo", country: "BR", countryName: "Brazil", tz: "America/Sao_Paulo" },
+  { label: "EZE", city: "Buenos Aires", country: "AR", countryName: "Argentina", tz: "America/Argentina/Buenos_Aires" },
+  { label: "LDN", city: "London", country: "UK", countryName: "United Kingdom", tz: "Europe/London" },
+  { label: "DUB", city: "Dublin", country: "IE", countryName: "Ireland", tz: "Europe/Dublin" },
+  { label: "LIS", city: "Lisbon", country: "PT", countryName: "Portugal", tz: "Europe/Lisbon" },
+  { label: "PAR", city: "Paris", country: "FR", countryName: "France", tz: "Europe/Paris" },
+  { label: "BER", city: "Berlin", country: "DE", countryName: "Germany", tz: "Europe/Berlin" },
+  { label: "FRA", city: "Frankfurt", country: "DE", countryName: "Germany", tz: "Europe/Berlin" },
+  { label: "MUC", city: "Munich", country: "DE", countryName: "Germany", tz: "Europe/Berlin" },
+  { label: "AMS", city: "Amsterdam", country: "NL", countryName: "Netherlands", tz: "Europe/Amsterdam" },
+  { label: "BRU", city: "Brussels", country: "BE", countryName: "Belgium", tz: "Europe/Brussels" },
+  { label: "ZRH", city: "Zurich", country: "CH", countryName: "Switzerland", tz: "Europe/Zurich" },
+  { label: "GVA", city: "Geneva", country: "CH", countryName: "Switzerland", tz: "Europe/Zurich" },
+  { label: "MAD", city: "Madrid", country: "ES", countryName: "Spain", tz: "Europe/Madrid" },
+  { label: "BCN", city: "Barcelona", country: "ES", countryName: "Spain", tz: "Europe/Madrid" },
+  { label: "ROM", city: "Rome", country: "IT", countryName: "Italy", tz: "Europe/Rome" },
+  { label: "MIL", city: "Milan", country: "IT", countryName: "Italy", tz: "Europe/Rome" },
+  { label: "VIE", city: "Vienna", country: "AT", countryName: "Austria", tz: "Europe/Vienna" },
+  { label: "STO", city: "Stockholm", country: "SE", countryName: "Sweden", tz: "Europe/Stockholm" },
+  { label: "OSL", city: "Oslo", country: "NO", countryName: "Norway", tz: "Europe/Oslo" },
+  { label: "CPH", city: "Copenhagen", country: "DK", countryName: "Denmark", tz: "Europe/Copenhagen" },
+  { label: "WAW", city: "Warsaw", country: "PL", countryName: "Poland", tz: "Europe/Warsaw" },
+  { label: "PRG", city: "Prague", country: "CZ", countryName: "Czechia", tz: "Europe/Prague" },
+  { label: "ATH", city: "Athens", country: "GR", countryName: "Greece", tz: "Europe/Athens" },
+  { label: "IST", city: "Istanbul", country: "TR", countryName: "Turkey", tz: "Europe/Istanbul" },
+  { label: "CAI", city: "Cairo", country: "EG", countryName: "Egypt", tz: "Africa/Cairo" },
+  { label: "CMN", city: "Casablanca", country: "MA", countryName: "Morocco", tz: "Africa/Casablanca" },
+  { label: "LOS", city: "Lagos", country: "NG", countryName: "Nigeria", tz: "Africa/Lagos" },
+  { label: "NBO", city: "Nairobi", country: "KE", countryName: "Kenya", tz: "Africa/Nairobi" },
+  { label: "JNB", city: "Johannesburg", country: "ZA", countryName: "South Africa", tz: "Africa/Johannesburg" },
+  { label: "DXB", city: "Dubai", country: "AE", countryName: "United Arab Emirates UAE", tz: "Asia/Dubai" },
+  { label: "AUH", city: "Abu Dhabi", country: "AE", countryName: "United Arab Emirates UAE", tz: "Asia/Dubai" },
+  { label: "RUH", city: "Riyadh", country: "SA", countryName: "Saudi Arabia KSA", tz: "Asia/Riyadh" },
+  { label: "JED", city: "Jeddah", country: "SA", countryName: "Saudi Arabia KSA", tz: "Asia/Riyadh" },
+  { label: "MKK", city: "Makkah", country: "SA", countryName: "Saudi Arabia KSA", tz: "Asia/Riyadh" },
+  { label: "MED", city: "Madinah", country: "SA", countryName: "Saudi Arabia KSA", tz: "Asia/Riyadh" },
+  { label: "BAG", city: "Baghdad", country: "IQ", countryName: "Iraq", tz: "Asia/Baghdad" },
+  { label: "DOH", city: "Doha", country: "QA", countryName: "Qatar", tz: "Asia/Qatar" },
+  { label: "KWI", city: "Kuwait City", country: "KW", countryName: "Kuwait", tz: "Asia/Kuwait" },
+  { label: "BAH", city: "Manama", country: "BH", countryName: "Bahrain", tz: "Asia/Bahrain" },
+  { label: "MCT", city: "Muscat", country: "OM", countryName: "Oman", tz: "Asia/Muscat" },
+  { label: "AMM", city: "Amman", country: "JO", countryName: "Jordan", tz: "Asia/Amman" },
+  { label: "THR", city: "Tehran", country: "IR", countryName: "Iran", tz: "Asia/Tehran" },
+  { label: "KHI", city: "Karachi", country: "PK", countryName: "Pakistan", tz: "Asia/Karachi" },
+  { label: "LHE", city: "Lahore", country: "PK", countryName: "Pakistan", tz: "Asia/Karachi" },
+  { label: "ISB", city: "Islamabad", country: "PK", countryName: "Pakistan", tz: "Asia/Karachi" },
+  { label: "BOM", city: "Mumbai", country: "IN", countryName: "India", tz: "Asia/Kolkata" },
+  { label: "DEL", city: "New Delhi", country: "IN", countryName: "India", tz: "Asia/Kolkata" },
+  { label: "BLR", city: "Bengaluru", country: "IN", countryName: "India", tz: "Asia/Kolkata" },
+  { label: "DAC", city: "Dhaka", country: "BD", countryName: "Bangladesh", tz: "Asia/Dhaka" },
+  { label: "BKK", city: "Bangkok", country: "TH", countryName: "Thailand", tz: "Asia/Bangkok" },
+  { label: "SIN", city: "Singapore", country: "SG", countryName: "Singapore", tz: "Asia/Singapore" },
+  { label: "KUL", city: "Kuala Lumpur", country: "MY", countryName: "Malaysia", tz: "Asia/Kuala_Lumpur" },
+  { label: "CGK", city: "Jakarta", country: "ID", countryName: "Indonesia", tz: "Asia/Jakarta" },
+  { label: "MNL", city: "Manila", country: "PH", countryName: "Philippines", tz: "Asia/Manila" },
+  { label: "HKG", city: "Hong Kong", country: "HK", countryName: "Hong Kong China", tz: "Asia/Hong_Kong" },
+  { label: "SHA", city: "Shanghai", country: "CN", countryName: "China", tz: "Asia/Shanghai" },
+  { label: "PEK", city: "Beijing", country: "CN", countryName: "China", tz: "Asia/Shanghai" },
+  { label: "TPE", city: "Taipei", country: "TW", countryName: "Taiwan", tz: "Asia/Taipei" },
+  { label: "ICN", city: "Seoul", country: "KR", countryName: "South Korea", tz: "Asia/Seoul" },
+  { label: "TYO", city: "Tokyo", country: "JP", countryName: "Japan", tz: "Asia/Tokyo" },
+  { label: "OSA", city: "Osaka", country: "JP", countryName: "Japan", tz: "Asia/Tokyo" },
+  { label: "PER", city: "Perth", country: "AU", countryName: "Australia", tz: "Australia/Perth" },
+  { label: "SYD", city: "Sydney", country: "AU", countryName: "Australia", tz: "Australia/Sydney" },
+  { label: "MEL", city: "Melbourne", country: "AU", countryName: "Australia", tz: "Australia/Melbourne" },
+  { label: "AKL", city: "Auckland", country: "NZ", countryName: "New Zealand", tz: "Pacific/Auckland" },
+  { label: "UTC", city: "UTC", country: "UTC", countryName: "Universal Time", tz: "Etc/UTC" }
 ]
 
 var LEGACY_TZ_COUNTRIES = {
-  "US/Hawaii": "United States",
-  "US/Alaska": "United States",
-  "US/Pacific": "United States",
-  "US/Mountain": "United States",
-  "US/Central": "United States",
-  "US/Eastern": "United States",
-  "US/Arizona": "United States"
+  "US/Hawaii": "US",
+  "US/Alaska": "US",
+  "US/Pacific": "US",
+  "US/Mountain": "US",
+  "US/Central": "US",
+  "US/Eastern": "US",
+  "US/Arizona": "US"
 }
 
 function deriveCode(cityName) {
@@ -129,7 +129,8 @@ function countryForZone(label, tz, tzCountryMap) {
     }
   }
   if (tzCountryMap && tzCountryMap[tz]) {
-    return tzCountryMap[tz]
+    var entry = String(tzCountryMap[tz])
+    return entry.split("|")[0]
   }
   if (LEGACY_TZ_COUNTRIES[tz]) {
     return LEGACY_TZ_COUNTRIES[tz]
@@ -140,10 +141,10 @@ function countryForZone(label, tz, tzCountryMap) {
     }
   }
   var parts = String(tz || "").split("/")
-  return parts.length > 1 ? parts[0].replace(/_/g, " ") : "World"
+  return parts.length > 1 ? parts[0].slice(0, 2).toUpperCase() : "GL"
 }
 
-// Formats as "Country/City" (e.g. "Pakistan/Karachi", "Iraq/Baghdad", "United States/Los Angeles")
+// Formats as compact "CC/City" (e.g. "PK/Karachi", "IQ/Baghdad", "US/Los Angeles")
 function countryCityDisplay(label, tz, fallbackCity, tzCountryMap) {
   var city = cityDisplayName(label, tz, fallbackCity)
   var country = countryForZone(label, tz, tzCountryMap)
@@ -176,12 +177,13 @@ function searchCities(query, ianaList, tzCountryMap) {
     var c = CURATED_CITIES[i]
     var lbl = c.label.toLowerCase()
     var cty = c.city.toLowerCase()
-    var cnt = c.country.toLowerCase()
+    var cc = c.country.toLowerCase()
+    var cnt = c.countryName.toLowerCase()
     var tzLower = c.tz.toLowerCase()
     var ccPair = (c.country + "/" + c.city).toLowerCase()
 
     var score = -1
-    if (lbl === q || cty === q) score = 100
+    if (lbl === q || cty === q || cc === q) score = 100
     else if (lbl.indexOf(q) === 0) score = 90
     else if (cty.indexOf(q) === 0) score = 85
     else if (cty.indexOf(q) !== -1) score = 70
@@ -208,9 +210,10 @@ function searchCities(query, ianaList, tzCountryMap) {
 
       var parts = zone.split("/")
       var leaf = parts[parts.length - 1].replace(/_/g, " ")
-      var country = countryForZone("", zone, tzCountryMap)
-      var countryCity = country + "/" + leaf
-      var searchTarget = (zone + " " + countryCity).toLowerCase()
+      var rawEntry = (tzCountryMap && tzCountryMap[zone]) ? String(tzCountryMap[zone]) : ""
+      var countryAbbr = countryForZone("", zone, tzCountryMap)
+      var countryCity = countryAbbr + "/" + leaf
+      var searchTarget = (zone + " " + countryCity + " " + rawEntry).toLowerCase()
       if (searchTarget.indexOf(q) === -1) continue
 
       var code = deriveCode(leaf)
@@ -220,7 +223,7 @@ function searchCities(query, ianaList, tzCountryMap) {
 
       var zScore = leaf.toLowerCase().indexOf(q) === 0
         ? 75
-        : (country.toLowerCase().indexOf(q) === 0 ? 60 : 40)
+        : (rawEntry.toLowerCase().indexOf(q) !== -1 ? 60 : 40)
       scored.push({
         score: zScore,
         label: code,
