@@ -23,9 +23,7 @@ Panel {
   // State from clocker-panel.sh
   property var zones: []
   property int selectedIndex: 0
-  property string offsetExpr: ""
-  property bool offsetValid: true
-  property bool use12h: false
+  property bool use12h: true
   property string copiedLabel: ""
 
   // Search city state (modeled after omarchy.weather)
@@ -34,9 +32,6 @@ Panel {
   property var locationSuggestions: []
   property int suggestionIndex: 0
   property var ianaZones: []
-
-  // Inline time scroller state
-  property bool editingOffset: false
 
   readonly property var heroZone: (zones && zones.length > 0)
     ? zones[Math.min(selectedIndex, zones.length - 1)]
@@ -75,7 +70,6 @@ Panel {
   function close() {
     setCenterHoverRevealSuppressed(false)
     if (root.editingLocation) root.cancelEditingLocation()
-    if (root.editingOffset) root.cancelEditingOffset()
     root.controller.hide()
   }
 
@@ -99,11 +93,7 @@ Panel {
 
   function refresh() {
     if (panelProc.running) panelProc.running = false
-    if (root.offsetExpr !== "") {
-      panelProc.command = ["bash", root.panelScript, "--offset", root.offsetExpr]
-    } else {
-      panelProc.command = ["bash", root.panelScript]
-    }
+    panelProc.command = ["bash", root.panelScript]
     panelProc.running = true
   }
 
@@ -115,7 +105,6 @@ Panel {
 
   // ---- City Search / Slot Picker ----
   function startEditingLocation(slotIdx) {
-    if (root.editingOffset) cancelEditingOffset()
     if (slotIdx !== undefined && slotIdx !== null) {
       root.editingSlot = Math.max(0, Math.min(2, slotIdx))
       root.selectedIndex = root.editingSlot
@@ -168,33 +157,6 @@ Panel {
     }
   }
 
-  // ---- Time Scroller (+5h, -90m, 15:00, tomorrow 9am) ----
-  function startEditingOffset() {
-    if (root.editingLocation) cancelEditingLocation()
-    root.editingOffset = true
-    Qt.callLater(function() {
-      offsetField.text = root.offsetExpr
-      offsetField.selectAll()
-      offsetField.forceActiveFocus()
-    })
-  }
-
-  function cancelEditingOffset() {
-    root.editingOffset = false
-    Qt.callLater(function() {
-      if (keyCatcher) keyCatcher.forceActiveFocus()
-    })
-  }
-
-  function applyOffset(expr) {
-    root.offsetExpr = String(expr || "").trim()
-    root.editingOffset = false
-    root.refresh()
-    Qt.callLater(function() {
-      if (keyCatcher) keyCatcher.forceActiveFocus()
-    })
-  }
-
   function copyZone(z) {
     if (!z) return
     var txt = root.use12h ? (z.copyText12 || z.copyText) : (z.copyText24 || z.copyText)
@@ -224,7 +186,6 @@ Panel {
           if (typeof parsed.use12h === "boolean") {
             root.use12h = parsed.use12h
           }
-          root.offsetValid = parsed.offsetValid !== false
         } catch (e) {}
       }
     }
@@ -310,7 +271,7 @@ Panel {
     PanelKeyCatcher {
       id: keyCatcher
       anchors.fill: parent
-      blocked: root.editingLocation || root.editingOffset
+      blocked: root.editingLocation
       onReturnRequested: root.startEditingLocation(root.selectedIndex)
       onCloseRequested: root.close()
       onTabRequested: function(direction) { root.switchPanel(direction) }
@@ -340,12 +301,12 @@ Panel {
               id: heroLeft
               anchors.left: parent.left
               anchors.verticalCenter: parent.verticalCenter
-              spacing: Style.space(10)
+              spacing: Style.space(12)
 
               Text {
                 textFormat: Text.PlainText
                 anchors.verticalCenter: parent.verticalCenter
-                text: "󰖟"
+                text: "\uf0ac"
                 color: root.fgColor
                 font.family: root.fontFam
                 font.pixelSize: 36
@@ -384,15 +345,11 @@ Panel {
 
                 Text {
                   textFormat: Text.PlainText
-                  text: root.offsetExpr !== ""
-                    ? (root.offsetValid ? ("SCROLLED · " + root.offsetExpr.toUpperCase()) : "INVALID OFFSET")
-                    : "LIVE WORLD TIME"
-                  color: !root.offsetValid
-                    ? Color.urgent
-                    : (root.offsetExpr !== "" ? Color.accent : Qt.darker(root.fgColor, 1.45))
+                  text: root.heroZone ? root.heroZone.tz : "LIVE WORLD TIME"
+                  color: Qt.darker(root.fgColor, 1.45)
                   font.family: root.fontFam
                   font.pixelSize: Style.font.caption
-                  font.letterSpacing: 1
+                  font.letterSpacing: 0.6
                 }
               }
             }
@@ -937,175 +894,6 @@ Panel {
                     font.family: root.fontFam
                     font.pixelSize: Style.font.caption
                   }
-                }
-              }
-            }
-          }
-
-          // ---- Hairline divider ----
-          Rectangle {
-            width: parent.width - root.padX * 2
-            anchors.horizontalCenter: parent.horizontalCenter
-            height: Style.spacing.hairline
-            color: root.fgColor
-            opacity: 0.12
-          }
-
-          // ---- Bottom Bar: Quick Time Scroller (Aligned to [padX .. width - padX]) ----
-          Item {
-            id: bottomBar
-            width: parent.width - root.padX * 2
-            anchors.horizontalCenter: parent.horizontalCenter
-            height: Style.space(28)
-
-            Row {
-              visible: !root.editingOffset
-              anchors.left: parent.left
-              anchors.verticalCenter: parent.verticalCenter
-              spacing: Style.space(6)
-
-              Repeater {
-                model: [
-                  { label: "Live", expr: "" },
-                  { label: "+1h", expr: "+1h" },
-                  { label: "+3h", expr: "+3h" },
-                  { label: "+5h", expr: "+5h" },
-                  { label: "Tomorrow 9am", expr: "tomorrow 9am" }
-                ]
-
-                Rectangle {
-                  required property var modelData
-                  readonly property bool activeChip: root.offsetExpr === modelData.expr
-                  width: chipText.implicitWidth + Style.space(14)
-                  height: Style.space(24)
-                  radius: Style.cornerRadius
-                  color: activeChip
-                    ? Style.hoverFillFor(root.fgColor, Color.accent)
-                    : (chipMouse.containsMouse ? Qt.rgba(root.fgColor.r, root.fgColor.g, root.fgColor.b, 0.08) : "transparent")
-                  border.width: 1
-                  border.color: activeChip
-                    ? Color.accent
-                    : Qt.rgba(root.fgColor.r, root.fgColor.g, root.fgColor.b, 0.16)
-
-                  Text {
-                    id: chipText
-                    anchors.centerIn: parent
-                    textFormat: Text.PlainText
-                    text: modelData.label
-                    color: parent.activeChip ? Color.accent : Qt.darker(root.fgColor, 1.3)
-                    font.family: root.fontFam
-                    font.pixelSize: Style.font.caption
-                    font.bold: parent.activeChip
-                  }
-
-                  MouseArea {
-                    id: chipMouse
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: root.applyOffset(modelData.expr)
-                  }
-                }
-              }
-            }
-
-            // Right-aligned Custom Offset Pill Button matching preset chip height
-            Rectangle {
-              visible: !root.editingOffset
-              height: Style.space(24)
-              width: customOffRow.implicitWidth + Style.space(14)
-              anchors.right: parent.right
-              anchors.verticalCenter: parent.verticalCenter
-              radius: Style.cornerRadius
-              color: customOffMouse.containsMouse
-                ? Qt.rgba(root.fgColor.r, root.fgColor.g, root.fgColor.b, 0.08)
-                : "transparent"
-              border.width: 1
-              border.color: Qt.rgba(root.fgColor.r, root.fgColor.g, root.fgColor.b, 0.16)
-
-              Row {
-                id: customOffRow
-                anchors.centerIn: parent
-                spacing: Style.space(6)
-
-                Text {
-                  text: "󰥔"
-                  color: Qt.darker(root.fgColor, 1.35)
-                  font.family: root.fontFam
-                  font.pixelSize: Style.font.caption
-                  anchors.verticalCenter: parent.verticalCenter
-                }
-
-                Text {
-                  textFormat: Text.PlainText
-                  text: "Custom (+5h, 15:00…)"
-                  color: Qt.darker(root.fgColor, 1.3)
-                  font.family: root.fontFam
-                  font.pixelSize: Style.font.caption
-                  anchors.verticalCenter: parent.verticalCenter
-                }
-              }
-
-              MouseArea {
-                id: customOffMouse
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: root.startEditingOffset()
-              }
-            }
-
-            // Custom offset input field when active
-            Item {
-              visible: root.editingOffset
-              anchors.fill: parent
-
-              TextField {
-                id: offsetField
-                anchors.left: parent.left
-                anchors.right: cancelOffBtn.left
-                anchors.rightMargin: Style.space(6)
-                anchors.verticalCenter: parent.verticalCenter
-                placeholderText: "+5h, -90m, 15:00, tomorrow 9am (empty for Live)"
-                foreground: root.fgColor
-                font.family: root.fontFam
-
-                Keys.onPressed: function(event) {
-                  if (event.key === Qt.Key_Escape) {
-                    root.cancelEditingOffset()
-                    event.accepted = true
-                  } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                    root.applyOffset(offsetField.text)
-                    event.accepted = true
-                  }
-                }
-              }
-
-              Rectangle {
-                id: cancelOffBtn
-                width: Style.space(26)
-                height: Style.space(26)
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-                radius: Style.cornerRadius
-                color: cancelOffMouse.containsMouse ? Style.hoverFillFor(root.fgColor, Color.accent) : "transparent"
-                border.width: 1
-                border.color: Qt.rgba(root.fgColor.r, root.fgColor.g, root.fgColor.b, 0.15)
-
-                Text {
-                  anchors.centerIn: parent
-                  text: "✕"
-                  color: Qt.darker(root.fgColor, 1.35)
-                  font.family: root.fontFam
-                  font.pixelSize: Style.font.caption
-                }
-
-                MouseArea {
-                  id: cancelOffMouse
-                  anchors.fill: parent
-                  hoverEnabled: true
-                  cursorShape: Qt.PointingHandCursor
-                  onClicked: root.cancelEditingOffset()
                 }
               }
             }
