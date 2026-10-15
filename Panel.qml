@@ -304,7 +304,7 @@ Panel {
     open: root.opened
     centerOnBar: true
     focusTarget: keyCatcher
-    contentWidth: panel.fittedContentWidth(Style.space(520))
+    contentWidth: panel.fittedContentWidth(Style.space(560))
     contentHeight: panel.fittedContentHeight(clockerColumn.implicitHeight)
 
     PanelKeyCatcher {
@@ -340,7 +340,7 @@ Panel {
               id: heroLeft
               anchors.left: parent.left
               anchors.verticalCenter: parent.verticalCenter
-              spacing: Style.space(14)
+              spacing: Style.space(10)
 
               Text {
                 textFormat: Text.PlainText
@@ -348,7 +348,7 @@ Panel {
                 text: "󰖟"
                 color: root.fgColor
                 font.family: root.fontFam
-                font.pixelSize: 44
+                font.pixelSize: 36
               }
 
               Column {
@@ -356,7 +356,7 @@ Panel {
                 spacing: Style.space(2)
 
                 Row {
-                  spacing: Style.space(6)
+                  spacing: Style.space(5)
 
                   Text {
                     id: heroTimeText
@@ -366,7 +366,7 @@ Panel {
                       : "—"
                     color: root.fgColor
                     font.family: root.fontFam
-                    font.pixelSize: 42
+                    font.pixelSize: 34
                     font.bold: true
                   }
 
@@ -377,7 +377,7 @@ Panel {
                     text: root.heroZone ? root.heroZone.ampm : ""
                     color: Qt.darker(root.fgColor, 1.35)
                     font.family: root.fontFam
-                    font.pixelSize: Style.font.title
+                    font.pixelSize: Style.font.body
                     font.bold: true
                   }
                 }
@@ -411,7 +411,7 @@ Panel {
                 // Clickable city selector pill
                 Rectangle {
                   height: Style.space(24)
-                  width: locBtnRow.implicitWidth + Style.space(16)
+                  width: Math.min(Style.space(190), locBtnRow.implicitWidth + Style.space(16))
                   radius: Style.cornerRadius
                   color: root.editingLocation
                     ? Style.hoverFillFor(root.fgColor, Color.accent)
@@ -436,6 +436,8 @@ Panel {
 
                     Text {
                       textFormat: Text.PlainText
+                      width: Math.min(implicitWidth, Style.space(135))
+                      elide: Text.ElideRight
                       text: (root.heroCityName + " (" + (root.heroZone ? root.heroZone.label : "NYC") + ")").toUpperCase()
                       color: root.editingLocation ? Color.accent : root.fgColor
                       font.family: root.fontFam
