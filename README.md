@@ -45,7 +45,7 @@ rm -rf ~/.config/clocker
 - **`tzdata`** (`/usr/share/zoneinfo/` for offline IANA timezone and country lookup)
 - **`wl-clipboard` (`wl-copy`)** *(optional, for click-to-copy time on city cards)*
 
-No network calls, background daemons, or elevated privileges (`sudo`/`pkexec`) are used.
+No network calls, background daemons, or elevated root privileges are used.
 
 ## Features
 
