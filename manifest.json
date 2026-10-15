@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "author": "szaidi-code",
   "license": "MIT",
-  "description": "Weather-inspired World Clock popup, searchable 3-city timezone picker, 12H/24H toggle, and time scroller for the Omarchy bar.",
+  "description": "Weather-inspired World Clock popup, searchable 3-city timezone picker, and 12H/24H toggle for the Omarchy bar.",
   "repository": "https://github.com/szaidi-code/clocker",
   "kinds": [
     "bar-widget"
@@ -15,7 +15,7 @@
   },
   "barWidget": {
     "displayName": "Clocker World Clock",
-    "description": "Compact globe icon in the bar with a searchable 3-city world clock popup, 12H/24H toggle, and time scroller.",
+    "description": "Compact globe icon in the bar with a searchable 3-city world clock popup and 12H/24H toggle.",
     "category": "Time",
     "allowMultiple": false,
     "defaultSection": "center",
