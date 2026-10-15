@@ -32,6 +32,7 @@ Panel {
   property var locationSuggestions: []
   property int suggestionIndex: 0
   property var ianaZones: []
+  property var tzCountryMap: ({})
 
   readonly property var heroZone: (zones && zones.length > 0)
     ? zones[Math.min(selectedIndex, zones.length - 1)]
@@ -39,6 +40,9 @@ Panel {
   readonly property string heroCityName: heroZone
     ? Model.cityDisplayName(heroZone.label, heroZone.tz, heroZone.city)
     : "New York"
+  readonly property string heroCountryCity: heroZone
+    ? Model.countryCityDisplay(heroZone.label, heroZone.tz, heroZone.city, root.tzCountryMap)
+    : "United States/New York"
 
   readonly property color fgColor: root.bar ? root.bar.foreground : Color.foreground
   readonly property string fontFam: root.bar ? root.bar.fontFamily : Style.font.family
@@ -113,7 +117,7 @@ Panel {
     }
     root.editingLocation = true
     root.suggestionIndex = 0
-    root.locationSuggestions = Model.searchCities("", root.ianaZones)
+    root.locationSuggestions = Model.searchCities("", root.ianaZones, root.tzCountryMap)
     Qt.callLater(function() {
       locationField.text = ""
       locationField.forceActiveFocus()
@@ -129,7 +133,7 @@ Panel {
   }
 
   function updateCitySuggestions() {
-    root.locationSuggestions = Model.searchCities(locationField.text, root.ianaZones)
+    root.locationSuggestions = Model.searchCities(locationField.text, root.ianaZones, root.tzCountryMap)
     root.suggestionIndex = 0
   }
 
@@ -204,17 +208,29 @@ Panel {
 
   Process {
     id: ianaProc
-    command: ["timedatectl", "list-timezones"]
+    command: [
+      "bash",
+      "-c",
+      "awk -F'\\t' 'FILENAME ~ /iso3166\\.tab$/ && $0 !~ /^#/ && NF >= 2 { c[$1] = $2; if ($1 == \"GB\") c[$1] = \"United Kingdom\"; if ($1 == \"US\") c[$1] = \"United States\"; next } $0 !~ /^#/ && NF >= 3 { split($1, codes, \",\"); cc = codes[1]; if (cc in c && !($3 in seen)) { seen[$3] = 1; print $3 \"\\t\" c[cc] } }' /usr/share/zoneinfo/iso3166.tab /usr/share/zoneinfo/zone.tab /usr/share/zoneinfo/zone1970.tab 2>/dev/null"
+    ]
     stdout: StdioCollector {
       waitForEnd: true
       onStreamFinished: {
         var lines = String(text || "").split("\n")
         var clean = []
+        var cmap = {}
         for (var i = 0; i < lines.length; i++) {
           var t = lines[i].trim()
-          if (t) clean.push(t)
+          if (!t) continue
+          var parts = t.split("\t")
+          var tz = parts[0]
+          clean.push(tz)
+          if (parts.length > 1 && parts[1]) {
+            cmap[tz] = parts[1]
+          }
         }
         root.ianaZones = clean
+        root.tzCountryMap = cmap
       }
     }
   }
@@ -345,7 +361,7 @@ Panel {
 
                 Text {
                   textFormat: Text.PlainText
-                  text: root.heroZone ? root.heroZone.tz : "LIVE WORLD TIME"
+                  text: root.heroZone ? root.heroCountryCity : "LIVE WORLD TIME"
                   color: Qt.darker(root.fgColor, 1.45)
                   font.family: root.fontFam
                   font.pixelSize: Style.font.caption
@@ -884,12 +900,12 @@ Panel {
                     font.pixelSize: Style.font.caption
                   }
 
-                  // Row 4: IANA Timezone
+                  // Row 4: Country/City
                   Text {
                     width: parent.width
                     textFormat: Text.PlainText
                     elide: Text.ElideRight
-                    text: modelData.tz
+                    text: Model.countryCityDisplay(modelData.label, modelData.tz, modelData.city, root.tzCountryMap)
                     color: Qt.darker(root.fgColor, 1.65)
                     font.family: root.fontFam
                     font.pixelSize: Style.font.caption

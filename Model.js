@@ -15,6 +15,8 @@ var CURATED_CITIES = [
   { label: "SFO", city: "San Francisco", country: "United States", tz: "America/Los_Angeles" },
   { label: "LAX", city: "Los Angeles", country: "United States", tz: "America/Los_Angeles" },
   { label: "SEA", city: "Seattle", country: "United States", tz: "America/Los_Angeles" },
+  { label: "HAW", city: "Hawaii", country: "United States", tz: "Pacific/Honolulu" },
+  { label: "HNL", city: "Honolulu", country: "United States", tz: "Pacific/Honolulu" },
   { label: "YYZ", city: "Toronto", country: "Canada", tz: "America/Toronto" },
   { label: "YVR", city: "Vancouver", country: "Canada", tz: "America/Vancouver" },
   { label: "YUL", city: "Montreal", country: "Canada", tz: "America/Toronto" },
@@ -55,11 +57,13 @@ var CURATED_CITIES = [
   { label: "JED", city: "Jeddah", country: "Saudi Arabia", tz: "Asia/Riyadh" },
   { label: "MKK", city: "Makkah", country: "Saudi Arabia", tz: "Asia/Riyadh" },
   { label: "MED", city: "Madinah", country: "Saudi Arabia", tz: "Asia/Riyadh" },
+  { label: "BAG", city: "Baghdad", country: "Iraq", tz: "Asia/Baghdad" },
   { label: "DOH", city: "Doha", country: "Qatar", tz: "Asia/Qatar" },
   { label: "KWI", city: "Kuwait City", country: "Kuwait", tz: "Asia/Kuwait" },
   { label: "BAH", city: "Manama", country: "Bahrain", tz: "Asia/Bahrain" },
   { label: "MCT", city: "Muscat", country: "Oman", tz: "Asia/Muscat" },
   { label: "AMM", city: "Amman", country: "Jordan", tz: "Asia/Amman" },
+  { label: "THR", city: "Tehran", country: "Iran", tz: "Asia/Tehran" },
   { label: "KHI", city: "Karachi", country: "Pakistan", tz: "Asia/Karachi" },
   { label: "LHE", city: "Lahore", country: "Pakistan", tz: "Asia/Karachi" },
   { label: "ISB", city: "Islamabad", country: "Pakistan", tz: "Asia/Karachi" },
@@ -86,6 +90,16 @@ var CURATED_CITIES = [
   { label: "UTC", city: "UTC", country: "Universal Time", tz: "Etc/UTC" }
 ]
 
+var LEGACY_TZ_COUNTRIES = {
+  "US/Hawaii": "United States",
+  "US/Alaska": "United States",
+  "US/Pacific": "United States",
+  "US/Mountain": "United States",
+  "US/Central": "United States",
+  "US/Eastern": "United States",
+  "US/Arizona": "United States"
+}
+
 function deriveCode(cityName) {
   var clean = String(cityName || "").replace(/[^A-Za-z]/g, "").toUpperCase()
   if (clean.length >= 3) return clean.slice(0, 3)
@@ -107,19 +121,47 @@ function cityDisplayName(label, tz, fallbackCity) {
   return fallbackCity || String(tz || "").split("/").pop().replace(/_/g, " ")
 }
 
-function searchCities(query, ianaList) {
+function countryForZone(label, tz, tzCountryMap) {
+  var code = String(label || "").toUpperCase()
+  for (var i = 0; i < CURATED_CITIES.length; i++) {
+    if (CURATED_CITIES[i].label === code && CURATED_CITIES[i].tz === tz) {
+      return CURATED_CITIES[i].country
+    }
+  }
+  if (tzCountryMap && tzCountryMap[tz]) {
+    return tzCountryMap[tz]
+  }
+  if (LEGACY_TZ_COUNTRIES[tz]) {
+    return LEGACY_TZ_COUNTRIES[tz]
+  }
+  for (var j = 0; j < CURATED_CITIES.length; j++) {
+    if (CURATED_CITIES[j].tz === tz) {
+      return CURATED_CITIES[j].country
+    }
+  }
+  var parts = String(tz || "").split("/")
+  return parts.length > 1 ? parts[0].replace(/_/g, " ") : "World"
+}
+
+// Formats as "Country/City" (e.g. "Pakistan/Karachi", "Iraq/Baghdad", "United States/Los Angeles")
+function countryCityDisplay(label, tz, fallbackCity, tzCountryMap) {
+  var city = cityDisplayName(label, tz, fallbackCity)
+  var country = countryForZone(label, tz, tzCountryMap)
+  return country + "/" + city
+}
+
+function searchCities(query, ianaList, tzCountryMap) {
   var q = String(query || "").trim().toLowerCase()
   if (q.length === 0) {
-    // Return top default popular cities when search field is empty
     var defaults = []
-    var topIndices = [0, 20, 48, 50, 59, 69, 76, 11]
+    var topIndices = [0, 22, 50, 52, 62, 56, 79, 11]
     for (var d = 0; d < topIndices.length; d++) {
       var item = CURATED_CITIES[topIndices[d]]
       if (item) {
         defaults.push({
           label: item.label,
           name: item.city + " (" + item.label + ")",
-          description: item.country + " · " + item.tz,
+          description: item.country + "/" + item.city,
           tz: item.tz
         })
       }
@@ -136,14 +178,15 @@ function searchCities(query, ianaList) {
     var cty = c.city.toLowerCase()
     var cnt = c.country.toLowerCase()
     var tzLower = c.tz.toLowerCase()
+    var ccPair = (c.country + "/" + c.city).toLowerCase()
 
     var score = -1
     if (lbl === q || cty === q) score = 100
     else if (lbl.indexOf(q) === 0) score = 90
     else if (cty.indexOf(q) === 0) score = 85
     else if (cty.indexOf(q) !== -1) score = 70
-    else if (cnt.indexOf(q) === 0) score = 60
-    else if (tzLower.indexOf(q) !== -1 || cnt.indexOf(q) !== -1) score = 50
+    else if (cnt.indexOf(q) === 0 || ccPair.indexOf(q) === 0) score = 65
+    else if (tzLower.indexOf(q) !== -1 || cnt.indexOf(q) !== -1 || ccPair.indexOf(q) !== -1) score = 50
 
     if (score > 0) {
       var k = c.label + "|" + c.tz
@@ -152,7 +195,7 @@ function searchCities(query, ianaList) {
         score: score,
         label: c.label,
         name: c.city + " (" + c.label + ")",
-        description: c.country + " · " + c.tz,
+        description: c.country + "/" + c.city,
         tz: c.tz
       })
     }
@@ -162,23 +205,27 @@ function searchCities(query, ianaList) {
     for (var j = 0; j < ianaList.length; j++) {
       var zone = String(ianaList[j] || "").trim()
       if (!zone || zone.indexOf("/") === -1) continue
-      var zLower = zone.toLowerCase()
-      if (zLower.indexOf(q) === -1) continue
 
       var parts = zone.split("/")
-      var region = parts[0].replace(/_/g, " ")
       var leaf = parts[parts.length - 1].replace(/_/g, " ")
+      var country = countryForZone("", zone, tzCountryMap)
+      var countryCity = country + "/" + leaf
+      var searchTarget = (zone + " " + countryCity).toLowerCase()
+      if (searchTarget.indexOf(q) === -1) continue
+
       var code = deriveCode(leaf)
       var key = code + "|" + zone
       if (seenKey[key]) continue
       seenKey[key] = true
 
-      var zScore = leaf.toLowerCase().indexOf(q) === 0 ? 75 : 40
+      var zScore = leaf.toLowerCase().indexOf(q) === 0
+        ? 75
+        : (country.toLowerCase().indexOf(q) === 0 ? 60 : 40)
       scored.push({
         score: zScore,
         label: code,
         name: leaf + " (" + code + ")",
-        description: region + " · " + zone,
+        description: countryCity,
         tz: zone
       })
     }
